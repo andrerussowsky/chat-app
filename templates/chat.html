@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Chat</title>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="messages" id="messages">
+            {{ range .Messages }}
+                <p><strong>{{ .Username }} ({{ .Timestamp }}):</strong> {{ .Content }}</p>
+            {{ end }}
+        </div>
+        <div class="input-container">
+            <input type="text" id="message" placeholder="Type your message...">
+            <button id="send">Send</button>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const messagesContainer = document.getElementById("messages");
+            const messageInput = document.getElementById("message");
+            const sendButton = document.getElementById("send");
+
+            const socket = new WebSocket("ws://localhost:8080/ws");
+            var token = "{{ .Token }}";
+
+            sendButton.addEventListener("click", () => {
+                const message = messageInput.value;
+                if (message.trim() !== "") {
+                    socket.send(JSON.stringify({ token, content: message }));
+                    messageInput.value = "";
+                }
+            });
+
+            socket.addEventListener("message", (event) => {
+                const message = JSON.parse(event.data);
+                addMessageToChat(message); // Call a function to add the message to the chat
+            });
+        });
+        function addMessageToChat(message) {
+            const messagesContainer = document.getElementById("messages");
+            const messageElement = document.createElement("p");
+            messageElement.innerHTML = `<strong>${message.username} (${message.timestamp}):</strong> ${message.content}`;
+            messagesContainer.appendChild(messageElement);
+
+            // Ensure the chat only shows the last 50 messages
+            if (messagesContainer.children.length >= 50) {
+                messagesContainer.removeChild(messagesContainer.firstChild);
+            }
+
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+      </script>
+</body>
+</html>
