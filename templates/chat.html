@@ -36,19 +36,19 @@
             });
 
             socket.addEventListener("message", (event) => {
-                const message = JSON.parse(event.data);
-                addMessageToChat(message); // Call a function to add the message to the chat
+                const messagesContainer = document.getElementById("messages");
+                const messages = JSON.parse(event.data);
+                addMessageToChat(messages); // Call a function to add the message to the chat  
             });
         });
-        function addMessageToChat(message) {
+        function addMessageToChat(messages) {
             const messagesContainer = document.getElementById("messages");
-            const messageElement = document.createElement("p");
-            messageElement.innerHTML = `<strong>${message.username} (${message.timestamp}):</strong> ${message.content}`;
-            messagesContainer.appendChild(messageElement);
-
-            // Ensure the chat only shows the last 50 messages
-            if (messagesContainer.children.length >= 50) {
-                messagesContainer.removeChild(messagesContainer.firstChild);
+            
+            messagesContainer.innerHTML = ''
+            for (x in messages) {
+                const messageElement = document.createElement("p");
+                messageElement.innerHTML = `<strong>${messages[x].username} (${messages[x].timestamp}):</strong> ${messages[x].content}`;
+                messagesContainer.appendChild(messageElement);
             }
 
             messagesContainer.scrollTop = messagesContainer.scrollHeight;

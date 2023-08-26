@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/csv"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 
@@ -82,9 +82,7 @@ func getStockQuote(stockCode string) (string, error) {
 	}
 	defer resp.Body.Close()
 
-	fmt.Println(resp.Body)
-
-	csvData, err := ioutil.ReadAll(resp.Body)
+	csvData, err := io.ReadAll(resp.Body)
 	fmt.Println(csvData, err)
 	if err != nil {
 		return "", err

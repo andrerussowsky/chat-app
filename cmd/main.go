@@ -3,20 +3,32 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"text/template"
+
 	"github.com/andrerussowsky/chat-app/internal/handlers"
 )
 
+var templates *template.Template
+
 func main() {
-	http.HandleFunc("/", handlers.ServeHome)
-	http.HandleFunc("/ws", handlers.ServeWebSocket)
+	templates := loadTemplates() // Load templates
 
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	http.HandleFunc("/register", handlers.RegisterHandler)
-	http.HandleFunc("/login", handlers.LoginHandler)
-	http.HandleFunc("/chat", handlers.ServeChat)
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static")))) // Serve static files
 
-	go handlers.HandleMessages() // Start handling and broadcasting messages
+	http.HandleFunc("/", handlers.ServeHome(templates))               // Serve index
+	http.HandleFunc("/register", handlers.RegisterHandler(templates)) // Register user
+	http.HandleFunc("/login", handlers.LoginHandler(templates))       // Login user
+	http.HandleFunc("/chat", handlers.ServeChat(templates))           // Serve chat
+
+	http.HandleFunc("/ws", handlers.ServeWebSocket) // Serve websocket
+
+	go handlers.HandleMessages()     // Start handling and broadcasting messages
+	go handlers.ConsumeStockQuotes() // Start consuming stock quotes
 
 	fmt.Println("Server started on :8080")
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8080", nil) // Start server
+}
+
+func loadTemplates() *template.Template {
+	return template.Must(template.ParseFiles("templates/register.html", "templates/login.html", "templates/chat.html", "static/index.html"))
 }
