@@ -14,7 +14,7 @@ This is a simple browser-based chat application implemented in Go. It allows use
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/chat-app.git
+   git clone https://github.com/andrerussowsky/chat-app.git
 
 2. Change into the project directory:
 
