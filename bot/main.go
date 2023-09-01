@@ -83,7 +83,6 @@ func getStockQuote(stockCode string) (string, error) {
 	defer resp.Body.Close()
 
 	csvData, err := io.ReadAll(resp.Body)
-	fmt.Println(csvData, err)
 	if err != nil {
 		return "", err
 	}
