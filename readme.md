@@ -6,8 +6,8 @@ This is a simple browser-based chat application implemented in Go. It allows use
 
 ### Prerequisites
 
-- Go (version 1.13 or higher)
-- RabbitMQ (for bot integration)
+- Go (version 1.13 or higher) (https://golang.org/doc/install)
+- Docker (https://docs.docker.com/get-docker/)
 - Internet connection (for stock quote retrieval)
 
 ### Installation
@@ -18,17 +18,27 @@ This is a simple browser-based chat application implemented in Go. It allows use
 
 2. Change into the project directory:
 
-cd chat-app
+   ```sh
+   cd chat-app
+
+3. Start RabbitMQ using Docker Compose:
+
+   ```sh
+   docker-compose up -d
+
+This will start a RabbitMQ container and expose ports 5672 and 15672 (for the RabbitMQ Management UI).
 
 3. Install project dependencies:
 
-go mod tidy
+   ```sh
+   go mod tidy
 
 ### Usage
 
 1. Run the chat application server:
 
-go run cmd/chatapp/main.go
+   ```sh
+   go run cmd/main.go
 
 The server should start and listen on port 8080.
 
@@ -40,13 +50,15 @@ The server should start and listen on port 8080.
 
 ### Running the Bot
 
-1. Change into the bot directory:
+1. Open a new terminal and change into the bot directory:
 
-cd bot
+   ```sh
+   cd chat-app/bot
 
 2. Run the bot application:
 
-go run main.go
+   ```sh
+   go run main.go
 
 The bot will start and listen on port 8082.
 

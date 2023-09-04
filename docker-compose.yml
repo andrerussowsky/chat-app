@@ -1,0 +1,11 @@
+version: '3'
+services:
+  rabbitmq:
+    image: "rabbitmq:3.9.7"
+    container_name: "my-rabbitmq"
+    ports:
+      - "5672:5672"  # RabbitMQ default port
+      - "15672:15672"  # RabbitMQ Management UI port (optional)
+    environment:
+      RABBITMQ_DEFAULT_USER: "chat-app-user"
+      RABBITMQ_DEFAULT_PASS: "chat-app-password"
