@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"net/http"
@@ -35,7 +37,7 @@ func RegisterHandler(templates *template.Template) http.HandlerFunc {
 				return
 			}
 			session.Values["authenticated"] = false
-			session.Values["password"] = password
+			session.Values["password"] = GetMD5Hash(password)
 			session.Save(r, w)
 
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
@@ -57,7 +59,7 @@ func LoginHandler(templates *template.Template) http.HandlerFunc {
 				http.Redirect(w, r, "/login", http.StatusSeeOther)
 				return
 			}
-			if pass, ok := session.Values["password"].(string); !ok || pass != password {
+			if pass, ok := session.Values["password"].(string); !ok || pass != GetMD5Hash(password) {
 				http.Redirect(w, r, "/login", http.StatusSeeOther)
 				return
 			}
@@ -108,4 +110,10 @@ func ParseJWTToken(tokenString string) (string, error) {
 	}
 
 	return "", errors.New("invalid token")
+}
+
+func GetMD5Hash(text string) string {
+	hasher := md5.New()
+	hasher.Write([]byte(text))
+	return hex.EncodeToString(hasher.Sum(nil))
 }

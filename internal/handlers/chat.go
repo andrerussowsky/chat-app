@@ -152,7 +152,7 @@ func callBotAPI(stockCode string) {
 
 func ConsumeStockQuotes() {
 	// Connect to RabbitMQ
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial("amqp://chat-app-user:chat-app-password@localhost:5672/")
 	if err != nil {
 		log.Fatalf("Failed to connect to RabbitMQ: %v", err)
 	}
